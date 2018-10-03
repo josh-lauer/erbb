@@ -9,28 +9,38 @@ module ERBB
     # @param  str [String] the template to render.
     # @param  safe_level [Nil,Integer] the safe level.
     # @param  trim_mode [Nil,String] how to handle newlines.
-    def initialize(str, safe_level=nil, trim_mode='>')
+    # @param  eoutvar [Nil] if the user passes a 4th arg, error
+    def initialize(str, safe_level=nil, trim_mode='>', eoutvar=nil)
       # The fourth arg is the name of the variable defined on the receiver
       # which is used to store the rendered output when parsing a template.
       # ERBB works by exploiting that, so it has to control it.
+      raise ArgumentError, "In ERBB, the template ivar can’t be set" if eoutvar
       super(str, safe_level, trim_mode, Receiver::RENDERED_TEMPLATE)
     end
 
+    # @see https://ruby-doc.org/stdlib-2.5.1/libdoc/erb/rdoc/ERB.html#method-i-result
     # @param b [Binding] the binding to use for rendering.
     # @return [ERBB::Result] a string decorated with named blocks
     def result(b=new_toplevel)
-      # recent versions of ruby implement a receiver method. use that if
-      # possible, otherwise yoink 'self' out of the binding context.
-      receiver = b.respond_to?(:receiver) ? b.receiver : b.send(:eval, "self")
+      receiver = extract_receiver_from_binding(b)
 
-      # decorate the receiver with the new erbb methods
-      receiver.instance_exec { extend ERBB::Receiver }
-
-      # Render the template using the binding taken from the receiver
-      result = ERBB::Result.new(
+      # Render the template using the binding and return the result along with
+      #   the output of any named blocks.
+      ERBB::Result.new(
         super(b),
-        receiver.instance_variable_get(Receiver::RENDERED_BLOCKS)
+        receiver.named_blocks
       )
+    end
+
+    private
+
+    # @param b [Binding] the binding to use to find its implicit receiver.
+    def extract_receiver_from_binding(b)
+      # yoink 'self' out of the binding context.
+      b.send(:eval, "self").tap do |receiver|
+        # decorate it before returning to so erbb methods work in templates.
+        receiver.instance_exec { extend ERBB::Receiver }
+      end
     end
   end
 end
