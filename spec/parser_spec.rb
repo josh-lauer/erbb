@@ -28,23 +28,23 @@ RSpec.describe ERBB::Parser do
       let(:result) { erbb.result(binding) }
       let(:erbb) { ERBB::Parser.new(template) }
       let(:template) do
-        <<~TEMPLATE
-          <%= "line of text 1\n" %>
-          <% named_block :block_1 do %>
-          line of text 2
-          <% end %>
-          line of text 3
-          <% named_block :block_2 do %>
-          line of text 4
-          <% named_block :block_3 do %>
-          line of text 5
-          <% end %>
-          line of text 6
-          <% end %>
-          <% named_block :block_3 do %>
-          line of text 7
-          <% end %>
-        TEMPLATE
+<<-TEMPLATE
+<%= "line of text 1\n" %>
+<% named_block :block_1 do %>
+line of text 2
+<% end %>
+line of text 3
+<% named_block :block_2 do %>
+line of text 4
+<% named_block :block_3 do %>
+line of text 5
+<% end %>
+line of text 6
+<% end %>
+<% named_block :block_3 do %>
+line of text 7
+<% end %>
+TEMPLATE
       end
 
       it 'returns an ERBB::Result with named blocks on it' do
