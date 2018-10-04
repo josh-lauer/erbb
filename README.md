@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/josh-lauer/erbb.svg?branch=master)](https://travis-ci.com/josh-lauer/erbb)
+
 # ERBB
 
 `ERBB` is `ERB`, with the additional ability to name blocks and save the output of rendering those blocks separately. It works exactly like `ERB`, with some additional methods.
@@ -62,7 +64,7 @@ After checking out the repo, run `bin/setup` to install dependencies. Then, run 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/korrelate/erbb.
+Bug reports and pull requests are welcome on GitHub at https://github.com/josh-lauer/erbb.
 
 ## License
 

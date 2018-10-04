@@ -1,5 +1,14 @@
 sudo: false
 language: ruby
+
 rvm:
-  - 2.1.5
-before_install: gem install bundler -v 1.16.2
+  - ruby-2.1.5
+  - ruby-2.5.1
+
+before_install:
+  - gem install bundler
+  - gem install rake
+  - gem install rspec
+
+script:
+  - rake
